@@ -1,9 +1,8 @@
 // 画面のファイルを端末に控えておき、電波が弱いときも開けるようにする。
 // 記録の読み書き（Firebase の通信）には手を出さない。
-const CACHE = "futari-kakeibo-v1";
+const CACHE = "futari-kakeibo-v2";
 const FILES = [
-  "./", "./index.html", "./firebase.js", "./config.js", "./manifest.webmanifest",
-  "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png"
+  "./", "./index.html", "./firebase.js", "./config.js", "./manifest.webmanifest"
 ];
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
