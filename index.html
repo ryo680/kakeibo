@@ -14,7 +14,8 @@
 <title>ふたりの家計簿</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap" crossorigin="anonymous" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap"></noscript>
 <style>
 :root {
   /* layout: one narrow phone column — sticky month header, summary → breakdown → daily list; input in a bottom sheet */
@@ -23,7 +24,7 @@
   --ink: #1b2130;
   --muted: #5f6779;
   --line: #e1e4eb;
-  --line-strong: #cbd1dc;
+  --line-strong: #7d8798;
   --field: #fafbfd;
   --seg-bg: #e3e7ef;
   --accent: #2f54a3;
@@ -38,15 +39,15 @@
   --warn-bg: #fff3d4;
   --warn-ink: #5e4300;
   --shadow: 0 6px 20px rgba(20, 30, 60, .16);
-  --font-display: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Hiragino Sans", "Noto Sans JP", sans-serif;
-  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+  --font-display: "BIZ UDPGothic", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+  --font-body: "BIZ UDPGothic", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
   --radius: 14px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #10131a; --surface: #191d26; --ink: #e9ebf1; --muted: #9ba3b5; --line: #282e3a;
-    --line-strong: #3a4252; --field: #141821; --seg-bg: #222733;
+    --line-strong: #6b7487; --field: #141821; --seg-bg: #222733;
     --accent: #8fa8ff; --accent-ink: #0e1630; --accent-soft: #1d2741;
     --p1: #8fa8ff; --p2: #f291b4; --in: #5fd0a0; --shared: #eabd55; --shared-soft: #372c12;
     --danger: #ff8a80; --warn-bg: #372c12; --warn-ink: #f3d58b; --shadow: 0 6px 20px rgba(0, 0, 0, .5);
@@ -55,7 +56,7 @@
 }
 :root[data-theme="dark"] {
   --bg: #10131a; --surface: #191d26; --ink: #e9ebf1; --muted: #9ba3b5; --line: #282e3a;
-  --line-strong: #3a4252; --field: #141821; --seg-bg: #222733;
+  --line-strong: #6b7487; --field: #141821; --seg-bg: #222733;
   --accent: #8fa8ff; --accent-ink: #0e1630; --accent-soft: #1d2741;
   --p1: #8fa8ff; --p2: #f291b4; --in: #5fd0a0; --shared: #eabd55; --shared-soft: #372c12;
   --danger: #ff8a80; --warn-bg: #372c12; --warn-ink: #f3d58b; --shadow: 0 6px 20px rgba(0, 0, 0, .5);
@@ -88,7 +89,7 @@ h1 { font-family: var(--font-display); font-size: 18px; font-weight: 700; margin
 .month-nav > button { height: 40px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-size: 20px; line-height: 1; }
 .month-mid { display: grid; justify-items: center; gap: 0; }
 #monthLabel { font-family: var(--font-display); font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; }
-#btnThisMonth { border: 0; background: none; color: var(--accent); font-size: 12px; padding: 0 6px; min-height: 22px; }
+#btnThisMonth { border: 0; background: none; color: var(--accent); font-size: 14px; padding: 0 6px; min-height: 22px; }
 .seg { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--seg-bg); border-radius: 12px; padding: 3px; gap: 3px; }
 .seg.two { grid-template-columns: repeat(2, 1fr); }
 .seg button { border: 0; background: transparent; border-radius: 9px; padding: 6px; font-weight: 500; color: var(--muted); min-height: 38px; display: flex; align-items: center; justify-content: center; gap: 6px; min-width: 0; }
@@ -102,14 +103,14 @@ h1 { font-family: var(--font-display); font-size: 18px; font-weight: 700; margin
 /* main */
 main { max-width: 560px; margin: 0 auto; padding: 14px 16px 128px; display: grid; gap: 14px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
-.card h2 { font-size: 13px; color: var(--muted); font-weight: 500; margin: 0 0 10px; letter-spacing: .04em; }
+.card h2 { font-size: 14px; color: var(--muted); font-weight: 500; margin: 0 0 10px; letter-spacing: .04em; }
 .note { border-radius: 12px; padding: 12px 14px; font-size: 14px; background: var(--warn-bg); color: var(--warn-ink); }
 .note:empty { display: none; }
 
-.hero-lab { font-size: 13px; color: var(--muted); }
+.hero-lab { font-size: 14px; color: var(--muted); }
 .hero-val { font-family: var(--font-display); font-size: 32px; font-weight: 700; line-height: 1.25; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .subkpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
-.subkpis .lab { font-size: 12px; color: var(--muted); }
+.subkpis .lab { font-size: 14px; color: var(--muted); }
 .subkpis .val { font-family: var(--font-display); font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .val.pos { color: var(--in); }
 .people { display: grid; gap: 2px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 14px; }
@@ -117,7 +118,7 @@ main { max-width: 560px; margin: 0 auto; padding: 14px 16px 128px; display: grid
 .prow .who { display: flex; align-items: center; gap: 8px; min-width: 0; font-weight: 500; }
 .prow .who span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .prow .num { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
-.prow .num small { color: var(--muted); font-size: 11px; margin-right: 4px; }
+.prow .num small { color: var(--muted); font-size: 14px; margin-right: 4px; }
 
 .stack { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--line); gap: 2px; margin-bottom: 8px; }
 .stack span { display: block; height: 100%; min-width: 3px; }
@@ -125,11 +126,11 @@ main { max-width: 560px; margin: 0 auto; padding: 14px 16px 128px; display: grid
 .brow .cdot { width: 10px; height: 10px; border-radius: 3px; }
 .brow .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .brow .amt { font-variant-numeric: tabular-nums; text-align: right; }
-.brow .pct { color: var(--muted); font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; }
+.brow .pct { color: var(--muted); font-size: 14px; text-align: right; font-variant-numeric: tabular-nums; }
 .muted { color: var(--muted); font-size: 14px; margin: 0; }
 
 .day-group { display: grid; gap: 6px; }
-.day-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 0 4px; font-size: 13px; color: var(--muted); }
+.day-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 0 4px; font-size: 14px; color: var(--muted); }
 .day-head .day { font-weight: 700; color: var(--ink); font-size: 14px; }
 .day-head .sums { display: flex; gap: 10px; font-variant-numeric: tabular-nums; }
 .rows { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
@@ -139,9 +140,9 @@ main { max-width: 560px; margin: 0 auto; padding: 14px 16px 128px; display: grid
 .row .cdot { width: 10px; height: 10px; border-radius: 3px; }
 .row-main { display: grid; min-width: 0; }
 .row-title { font-weight: 500; overflow-wrap: anywhere; }
-.row-memo { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.row-memo { font-size: 14px; color: var(--muted); overflow-wrap: anywhere; }
 .row-tags { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
-.pchip { font-size: 11px; border-radius: 999px; padding: 1px 8px; white-space: nowrap; max-width: 7em; overflow: hidden; text-overflow: ellipsis; }
+.pchip { font-size: 14px; border-radius: 999px; padding: 1px 8px; white-space: nowrap; max-width: 7em; overflow: hidden; text-overflow: ellipsis; }
 .pchip { border: 1px solid currentColor; }
 .pchip.p1 { color: var(--p1); }
 .pchip.p2 { color: var(--p2); }
@@ -153,8 +154,8 @@ main { max-width: 560px; margin: 0 auto; padding: 14px 16px 128px; display: grid
 .fx-name { font-weight: 700; overflow-wrap: anywhere; }
 .fx-amt { font-family: var(--font-display); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .fx-amt.in { color: var(--in); }
-.fx-sub { grid-column: 1 / -1; font-size: 13px; color: var(--muted); }
-.fixed-empty { margin: 0; font-size: 13px; color: var(--muted); }
+.fx-sub { grid-column: 1 / -1; font-size: 14px; color: var(--muted); }
+.fixed-empty { margin: 0; font-size: 14px; color: var(--muted); }
 .pchip.fixed { color: var(--muted); }
 .sel { font: inherit; font-size: 16px; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--field); color: var(--ink); width: 100%; min-height: 44px; }
 .row-amt { font-family: var(--font-display); font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; min-width: 5.5em; }
@@ -192,7 +193,7 @@ main { max-width: 560px; margin: 0 auto; padding: 14px 16px 128px; display: grid
 .close-btn { border: 0; background: none; color: var(--muted); padding: 8px 4px; min-height: 40px; }
 form, .stack-form { display: grid; gap: 16px; }
 .field { display: grid; gap: 6px; }
-.field > .lab { font-size: 13px; color: var(--muted); font-weight: 500; }
+.field > .lab { font-size: 14px; color: var(--muted); font-weight: 500; }
 input[type="text"], input[type="date"], input[type="email"], input[type="password"] {
   font: inherit; font-size: 16px; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 10px;
   background: var(--field); color: var(--ink); width: 100%; min-height: 44px;
@@ -221,7 +222,7 @@ input[type="text"], input[type="date"], input[type="email"], input[type="passwor
 .set-section { display: grid; gap: 10px; padding: 14px 0; border-top: 1px solid var(--line); }
 .set-section:first-of-type { border-top: 0; padding-top: 0; }
 .set-section h3 { font-size: 15px; margin: 0; }
-.set-section p { margin: 0; font-size: 13px; color: var(--muted); }
+.set-section p { margin: 0; font-size: 14px; color: var(--muted); }
 .two-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 #toast {
@@ -239,18 +240,18 @@ label.btn { display: inline-flex; align-items: center; justify-content: center; 
 label.btn[aria-disabled="true"] { opacity: .55; pointer-events: none; }
 .receipt-box { display: grid; gap: 6px; padding: 12px; border-radius: 12px; background: var(--accent-soft); }
 .receipt-box .btn { min-height: 44px; }
-.receipt-status { margin: 0; font-size: 13px; color: var(--ink); }
+.receipt-status { margin: 0; font-size: 14px; color: var(--ink); }
 .receipt-status:empty { display: none; }
 .lead { margin: 0; font-size: 14px; }
 .howto { border: 1px solid var(--line); border-radius: 12px; padding: 0 14px; }
 .howto summary { cursor: pointer; padding: 12px 0; font-weight: 500; }
 .howto ol { margin: 0 0 8px; padding-left: 1.3em; font-size: 14px; display: grid; gap: 4px; }
-.howto p { margin: 0 0 12px; font-size: 13px; color: var(--muted); }
+.howto p { margin: 0 0 12px; font-size: 14px; color: var(--muted); }
 .imp-top { display: grid; gap: 12px; }
 .imp-summary { margin: 0; font-size: 14px; }
 .imp-tools { display: flex; flex-wrap: wrap; gap: 8px; }
 .imp-tools .btn { min-height: 40px; padding: 6px 12px; font-size: 14px; font-weight: 500; }
-.hint { margin: 0; font-size: 13px; color: var(--muted); }
+.hint { margin: 0; font-size: 14px; color: var(--muted); }
 .imp-list { list-style: none; margin: 12px 0 0; padding: 0; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
 .imp-row { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 6px 10px; align-items: start; padding: 10px 12px; }
 .imp-row + .imp-row { border-top: 1px solid var(--line); }
@@ -258,47 +259,47 @@ label.btn[aria-disabled="true"] { opacity: .55; pointer-events: none; }
 .imp-row input[type="checkbox"] { width: 22px; height: 22px; margin: 2px 0 0; accent-color: var(--accent); }
 .imp-main { display: grid; gap: 4px; min-width: 0; }
 .imp-desc { font-weight: 500; overflow-wrap: anywhere; font-size: 14px; }
-.imp-meta { font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; }
+.imp-meta { font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; }
 .imp-amt { font-family: var(--font-display); font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .imp-amt.in { color: var(--in); }
 .imp-ctrl { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .imp-ctrl select { font: inherit; font-size: 16px; padding: 4px 8px; min-height: 36px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--field); color: var(--ink); max-width: 100%; }
-.mini-chip { border: 1px solid var(--line-strong); background: var(--surface); border-radius: 999px; padding: 3px 10px; font-size: 13px; min-height: 32px; }
-.badge { font-size: 11px; border-radius: 6px; padding: 1px 6px; background: var(--warn-bg); color: var(--warn-ink); }
+.mini-chip { border: 1px solid var(--line-strong); background: var(--surface); border-radius: 999px; padding: 3px 10px; font-size: 14px; min-height: 32px; }
+.badge { font-size: 14px; border-radius: 6px; padding: 1px 6px; background: var(--warn-bg); color: var(--warn-ink); }
 .acct { display: grid; gap: 8px; padding: 12px 0; }
 .acct + .acct { border-top: 1px solid var(--line); }
 .acct-head { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; gap: 0 10px; align-items: center; }
 .acct-name { font-weight: 500; font-size: 15px; }
-.acct-name small { color: var(--muted); font-size: 12px; font-weight: 400; margin-left: 6px; }
+.acct-name small { color: var(--muted); font-size: 14px; font-weight: 400; margin-left: 6px; }
 .acct-bal { font-family: var(--font-display); font-weight: 700; font-size: 20px; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
 .acct-bal.empty { color: var(--muted); font-size: 14px; font-weight: 500; }
-.acct-sub { grid-column: 2 / 4; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.acct-sub { grid-column: 2 / 4; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
 .debits { display: grid; margin-left: 20px; padding: 8px 12px; border-radius: 10px; background: var(--bg); }
-.debits-title { font-size: 12px; color: var(--muted); font-weight: 500; }
+.debits-title { font-size: 14px; color: var(--muted); font-weight: 500; }
 .debit { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 10px; padding: 5px 0; font-size: 14px; }
 .debit + .debit { border-top: 1px dashed var(--line-strong); }
 .debit .amt { font-variant-numeric: tabular-nums; font-weight: 500; text-align: right; white-space: nowrap; }
-.debit .sub { grid-column: 1 / 3; font-size: 12px; color: var(--muted); }
+.debit .sub { grid-column: 1 / 3; font-size: 14px; color: var(--muted); }
 .remain { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-left: 20px; padding: 8px 12px; border-radius: 10px; font-size: 14px; font-weight: 500; }
 .remain.ok { background: color-mix(in srgb, var(--in) 12%, transparent); color: var(--in); }
 .remain.short { background: color-mix(in srgb, var(--danger) 12%, transparent); color: var(--danger); }
 .remain b { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .acct-sub .link-btn { white-space: nowrap; flex: none; }
-.acct-note { margin: 0 0 0 20px; font-size: 12px; color: var(--muted); }
-.money-foot { margin: 6px 0 0; font-size: 12px; color: var(--muted); }
+.acct-note { margin: 0 0 0 20px; font-size: 14px; color: var(--muted); }
+.money-foot { margin: 6px 0 0; font-size: 14px; color: var(--muted); }
 .cov-list { display: grid; }
 .cov-row { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; gap: 2px 10px; align-items: center; padding: 9px 0; }
 .cov-row + .cov-row { border-top: 1px solid var(--line); }
 .cov-name { font-weight: 500; font-size: 14px; }
-.cov-sub { grid-column: 2 / 4; font-size: 12px; color: var(--muted); }
-.cov-chip { font-size: 12px; font-weight: 500; border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+.cov-sub { grid-column: 2 / 4; font-size: 14px; color: var(--muted); }
+.cov-chip { font-size: 14px; font-weight: 500; border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
 .cov-chip.full { background: color-mix(in srgb, var(--in) 16%, transparent); color: var(--in); }
 .cov-chip.part { background: var(--warn-bg); color: var(--warn-ink); }
 .cov-chip.none { background: var(--seg-bg); color: var(--muted); }
 .cov-foot { display: flex; justify-content: flex-end; margin-top: 6px; }
 .link-btn { border: 0; background: none; color: var(--accent); font-size: 14px; font-weight: 500; padding: 6px 0; min-height: 36px; }
 .imp-step1-cov { border: 1px solid var(--line); border-radius: 12px; padding: 4px 14px; }
-.imp-step1-cov h3 { font-size: 13px; color: var(--muted); font-weight: 500; margin: 8px 0 0; }
+.imp-step1-cov h3 { font-size: 14px; color: var(--muted); font-weight: 500; margin: 8px 0 0; }
 .imp-foot { position: sticky; bottom: -28px; background: var(--surface); padding: 12px 0 28px; margin-top: 12px; display: grid; grid-template-columns: 1fr 2fr; gap: 10px; border-top: 1px solid var(--line); }
 
 .login { position: fixed; inset: 0; z-index: 40; background: var(--bg); display: grid; place-items: center; padding: 24px 16px; overflow-y: auto; }
@@ -314,6 +315,25 @@ label.btn[aria-disabled="true"] { opacity: .55; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) {
   .sheet, .sheet.open, .backdrop, #toast { transition: none; }
 }
+
+/* ---------- v3: 押すところは44px以上、読みやすさ ---------- */
+.month-nav > button { height: 44px; }
+.month-mid { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+#btnThisMonth { min-height: 44px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); font-size: 14px; font-weight: 700; }
+.seg button { min-height: 44px; }
+.text-icon-btn { height: 44px; }
+.link-btn { min-height: 44px; }
+.close-btn { min-height: 44px; padding: 8px 8px; }
+.chip { min-height: 44px; }
+.imp-ctrl select { min-height: 44px; }
+.mini-chip { min-height: 44px; }
+.icon-btn.labeled { width: auto; min-width: 52px; height: auto; min-height: 52px; padding: 4px 6px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.icon-label { font-size: 14px; font-weight: 700; line-height: 1.1; }
+
+/* 電波の表示 */
+.netbar { padding: 10px 16px; background: #3B4552; color: #FFFFFF; font-size: 15px; font-weight: 700; line-height: 1.5; display: flex; gap: 8px; align-items: flex-start; }
+.netbar::before { content: "●"; color: #FFC857; flex: none; }
+.netbar-inner { max-width: 560px; margin: 0 auto; width: 100%; display: flex; gap: 8px; }
 </style>
 </head>
 <body>
@@ -335,6 +355,7 @@ label.btn[aria-disabled="true"] { opacity: .55; pointer-events: none; }
 </div>
 
 <header class="top">
+  <div class="netbar" id="netbar" role="status" aria-live="polite" hidden></div>
   <div class="top-inner">
     <div class="title-row">
       <h1>ふたりの家計簿</h1>
@@ -343,8 +364,9 @@ label.btn[aria-disabled="true"] { opacity: .55; pointer-events: none; }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
         明細の取り込み
       </button>
-      <button id="btnSettings" class="icon-btn" type="button" aria-label="設定">
+      <button id="btnSettings" class="icon-btn labeled" type="button" aria-label="設定">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        <span class="icon-label" aria-hidden="true">設定</span>
       </button>
       </div>
     </div>
@@ -352,7 +374,7 @@ label.btn[aria-disabled="true"] { opacity: .55; pointer-events: none; }
       <button id="prevMonth" type="button" aria-label="前の月">‹</button>
       <div class="month-mid">
         <div id="monthLabel" aria-live="polite">—</div>
-        <button id="btnThisMonth" type="button" hidden>今月にもどる</button>
+        <button id="btnThisMonth" type="button" hidden>今月へ</button>
       </div>
       <button id="nextMonth" type="button" aria-label="次の月">›</button>
     </div>
@@ -844,6 +866,51 @@ import { firebaseConfig } from "./config.js";
   }
 
   // ---------- capabilities ----------
+  // ---------- 電波の状態 ----------
+  let pendingWrites = 0, pendingSlow = false, pendingTimer = null, hadPending = false;
+  function track(p) {
+    pendingWrites++;
+    if (!pendingTimer) pendingTimer = setTimeout(() => { pendingTimer = null; if (pendingWrites) { pendingSlow = true; updateNet(); } }, 3000);
+    updateNet();
+    const done = () => {
+      pendingWrites = Math.max(0, pendingWrites - 1);
+      if (!pendingWrites) {
+        clearTimeout(pendingTimer); pendingTimer = null;
+        if (hadPending) toast("送れていなかった分を送りました");
+        pendingSlow = false; hadPending = false;
+      }
+      updateNet();
+    };
+    p.then(done, done);
+    return p;
+  }
+  function updateNet() {
+    const bar = document.getElementById("netbar");
+    if (!bar) return;
+    const off = typeof navigator !== "undefined" && navigator.onLine === false;
+    let msg = "";
+    if (off) {
+      msg = "オフラインです。いま見えているのは、この端末に控えてある記録です。" +
+        (pendingWrites ? `書いた${pendingWrites}件は、つながったときに送ります。` : "書いた記録は、つながったときに送ります。");
+    } else if (pendingWrites && pendingSlow) {
+      msg = `送信待ちが${pendingWrites}件あります。電波がよくなると、自動で送ります。`;
+    }
+    if (msg && pendingWrites) hadPending = true;
+    bar.textContent = msg;
+    bar.hidden = !msg;
+  }
+  window.addEventListener("online", updateNet);
+  window.addEventListener("offline", updateNet);
+  // 動作確認用の見本のデータ置き場にも、送信待ちの数え方を同じようにつける
+  function trackDb(api) {
+    const wrapDoc = (d) => Object.assign({}, d, { set: (x) => track(d.set(x)), delete: () => track(d.delete()) });
+    return Object.assign({}, api, {
+      doc: (pth) => wrapDoc(api.doc(pth)),
+      collection: (pth) => { const c = api.collection(pth); return Object.assign({}, c, { doc: (id) => wrapDoc(c.doc(id)) }); },
+      setMany: (a, b) => track(api.setMany(a, b))
+    });
+  }
+
   // ---------- Firebase の読み書き（Claude版と同じ形で使えるようにする） ----------
   function mapFsError(e) {
     const code = (e && e.code) || "";
@@ -861,8 +928,8 @@ import { firebaseConfig } from "./config.js";
     const docApi = (ref) => ({
       id: ref.id, path: ref.path,
       get: () => wrapErr(getDoc(ref).then(wrapDocSnap)),
-      set: (data) => wrapErr(setDoc(ref, data)),
-      delete: () => wrapErr(deleteDoc(ref)),
+      set: (data) => track(wrapErr(setDoc(ref, data))),
+      delete: () => track(wrapErr(deleteDoc(ref))),
       onSnapshot: (next, err) => onSnapshot(ref, opts, (snap) => next(wrapDocSnap(snap)), (e) => err && err(mapFsError(e)))
     });
     const collApi = (ref) => ({
@@ -882,7 +949,7 @@ import { firebaseConfig } from "./config.js";
         for (let i = 0; i < items.length; i += 400) {
           const b = writeBatch(fs);
           for (const it of items.slice(i, i + 400)) b.set(doc(fs, it.path), it.data);
-          await wrapErr(b.commit());
+          await track(wrapErr(b.commit()));
           if (onProgress) onProgress(Math.min(i + 400, items.length));
         }
       }
@@ -2455,8 +2522,9 @@ import { firebaseConfig } from "./config.js";
     $("#login").hidden = true;
     let me = lsGet("kakeibo.me");
     try {
-      const snap = await db.doc(`prefs/${uid}`).get();
-      const d = snap.exists ? snap.data() : null;
+      // 電波が弱いときは待たずに、この端末に覚えている人で始める
+      const snap = await Promise.race([db.doc(`prefs/${uid}`).get(), sleep(1500).then(() => null)]);
+      const d = snap && snap.exists ? snap.data() : null;
       if (d && (d.me === "p1" || d.me === "p2")) me = d.me;
     } catch (e) { /* 権限がないときは下の購読でわかる */ }
     S.meChosen = me === "p1" || me === "p2";
@@ -2473,12 +2541,13 @@ import { firebaseConfig } from "./config.js";
   async function init() {
     bind();
     render();
+    updateNet();
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./sw.js").catch(() => { /* なくても動く */ });
     }
     // 動作確認用：テストのときだけ、見本のデータ置き場を使う
     const test = window.__KAKEIBO_TEST__;
-    if (test) { startApp(test.db, test.uid, test.email); return; }
+    if (test) { startApp(trackDb(test.db), test.uid, test.email); return; }
     if (!firebaseConfig || !firebaseConfig.apiKey || /ここに/.test(String(firebaseConfig.apiKey))) {
       showLogin("まだFirebaseの設定が入っていません。config.js に、Firebaseの画面でコピーした設定を貼り付けてください。");
       return;
