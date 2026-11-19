@@ -145,6 +145,18 @@ main { max-width: 560px; margin: 0 auto; padding: 14px 16px 128px; display: grid
 .pchip { border: 1px solid currentColor; }
 .pchip.p1 { color: var(--p1); }
 .pchip.p2 { color: var(--p2); }
+
+/* 毎月の決まった支払い */
+.fixed-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.fixed-btn { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; width: 100%; text-align: left; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--surface); color: var(--ink); min-height: 56px; }
+.fixed-btn:disabled { cursor: default; }
+.fx-name { font-weight: 700; overflow-wrap: anywhere; }
+.fx-amt { font-family: var(--font-display); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fx-amt.in { color: var(--in); }
+.fx-sub { grid-column: 1 / -1; font-size: 13px; color: var(--muted); }
+.fixed-empty { margin: 0; font-size: 13px; color: var(--muted); }
+.pchip.fixed { color: var(--muted); }
+.sel { font: inherit; font-size: 16px; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--field); color: var(--ink); width: 100%; min-height: 44px; }
 .row-amt { font-family: var(--font-display); font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; min-width: 5.5em; }
 .row-amt.in { color: var(--in); }
 
@@ -481,6 +493,13 @@ label.btn[aria-disabled="true"] { opacity: .55; pointer-events: none; }
     </section>
 
     <section class="set-section">
+      <h3>毎月の決まった支払い</h3>
+      <p>家賃や送金など、毎月同じ日に同じ金額のものを登録しておくと、その日になったら自動で記録します。カードで払っているものは明細の取り込みで入るので、ここには登録しないでください（二重になります）。</p>
+      <ul class="fixed-list" id="fixedList"></ul>
+      <button type="button" class="btn btn-line" id="btnAddFixed">＋ 登録する</button>
+    </section>
+
+    <section class="set-section">
       <h3>バックアップ</h3>
       <p>すべての記録と設定を、1つのファイルに保存します。機種変更のときや、念のための控えに使えます。このファイルは、GitHubなど人が見られる場所には置かないでください。</p>
       <div class="two-btns">
@@ -610,6 +629,58 @@ label.btn[aria-disabled="true"] { opacity: .55; pointer-events: none; }
   </form>
 </div>
 
+<div class="sheet" id="fixedSheet" role="dialog" aria-modal="true" aria-labelledby="fixedTitle">
+  <div class="grab"></div>
+  <div class="sheet-head">
+    <h2 id="fixedTitle">毎月の支払いを登録</h2>
+    <button type="button" class="close-btn" data-close>閉じる</button>
+  </div>
+  <form id="fixedForm" novalidate>
+    <div class="field">
+      <label class="lab" for="xName">名前</label>
+      <input type="text" id="xName" maxlength="40" placeholder="例：家賃" autocomplete="off">
+    </div>
+    <div class="seg two" id="xKind" role="group" aria-label="支出か収入か">
+      <button type="button" data-kind="out" aria-pressed="true">支出</button>
+      <button type="button" data-kind="in" aria-pressed="false">収入</button>
+    </div>
+    <div class="field">
+      <label class="lab" for="xAmount">金額</label>
+      <div class="amount"><span class="yen">¥</span><input id="xAmount" type="text" inputmode="numeric" autocomplete="off" placeholder="0" maxlength="14"></div>
+    </div>
+    <div class="field">
+      <span class="lab" id="xCatLab">費目</span>
+      <div class="chips" id="xCats" role="group" aria-labelledby="xCatLab"></div>
+      <div class="add-row">
+        <input type="text" id="xNewCat" maxlength="20" placeholder="新しい費目を作る" aria-label="新しい費目の名前" autocomplete="off">
+        <button type="button" class="btn btn-line" id="btnXNewCat">作る</button>
+      </div>
+    </div>
+    <div class="field">
+      <span class="lab" id="xPersonLab">払う人</span>
+      <div class="seg two" id="xPerson" role="group" aria-labelledby="xPersonLab">
+        <button type="button" data-person="p1" aria-pressed="true"><span class="dot p1"></span><span class="nm">1人目</span></button>
+        <button type="button" data-person="p2" aria-pressed="false"><span class="dot p2"></span><span class="nm">2人目</span></button>
+      </div>
+    </div>
+    <div class="field">
+      <label class="lab" for="xDay">毎月の日</label>
+      <select id="xDay" class="sel"></select>
+    </div>
+    <div class="field" id="xStartField">
+      <label class="lab" for="xStart">いつの分から記録する？</label>
+      <select id="xStart" class="sel"></select>
+    </div>
+    <p class="hint" id="xHint"></p>
+    <p class="form-error" id="xError" role="alert"></p>
+    <div class="actions">
+      <button type="button" class="btn btn-line" data-close>やめる</button>
+      <button type="submit" class="btn btn-primary" id="btnXSave">保存する</button>
+    </div>
+    <button type="button" class="btn btn-danger" id="btnXDelete" hidden>この登録を消す</button>
+  </form>
+</div>
+
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script type="module">
@@ -712,7 +783,8 @@ import { firebaseConfig } from "./config.js";
     unsub: null, loadTimer: null,
     local: {},
     imports: {},
-    accounts: {}, debits: [], debitsLoaded: false
+    accounts: {}, debits: [], debitsLoaded: false,
+    fixed: [], fixedLoaded: false
   };
 
   function pname(p) {
@@ -750,7 +822,8 @@ import { firebaseConfig } from "./config.js";
       memo: typeof d.memo === "string" ? d.memo.slice(0, 100) : "",
       createdAt: Number(d.createdAt) || 0,
       importKey: typeof d.importKey === "string" ? d.importKey.slice(0, 300) : "",
-      src: typeof d.src === "string" ? d.src.slice(0, 20) : ""
+      src: typeof d.src === "string" ? d.src.slice(0, 20) : "",
+      fixedId: typeof d.fixedId === "string" ? d.fixedId.slice(0, 100) : ""
     };
   }
   function catColor(cat, kind) {
@@ -835,7 +908,7 @@ import { firebaseConfig } from "./config.js";
       S.canWrite = false; render();
       return "このアカウントには書き込む権限がないため、保存できませんでした。";
     }
-    if (code === "quota_exceeded") return "Firebaseの無料で使える量を、今月は使い切ったため保存できませんでした。来月になると戻ります。";
+    if (code === "quota_exceeded") return "Firebaseの無料で使える量を、今日の分は使い切ったため保存できませんでした。日本時間の夕方（16〜17時ごろ）に戻ります。";
     if (code === "resource_exhausted" || code === "rate_limited") return "操作が続いたため少し待っています。数秒おいて、もう一度押してください。";
     return "保存できませんでした。通信状況を確かめて、もう一度押してください。";
   }
@@ -1033,7 +1106,8 @@ import { firebaseConfig } from "./config.js";
         e.memo ? h("span", { class: "row-memo" }, e.memo) : null
       ),
       h("span", { class: "row-tags" },
-        h("span", { class: `pchip ${e.person}` }, pname(e.person))
+        h("span", { class: `pchip ${e.person}` }, pname(e.person)),
+        e.src === "fixed" ? h("span", { class: "pchip fixed" }, "毎月") : null
       ),
       h("span", { class: `row-amt ${e.kind}` }, (e.kind === "in" ? "+" : "−") + fmt(e.amount))
     );
@@ -1089,7 +1163,7 @@ import { firebaseConfig } from "./config.js";
   }
 
   // ---------- sheets ----------
-  const SHEETS = { entry: "#entrySheet", settings: "#settingsSheet", import: "#importSheet", balance: "#balanceSheet" };
+  const SHEETS = { entry: "#entrySheet", settings: "#settingsSheet", import: "#importSheet", balance: "#balanceSheet", fixed: "#fixedSheet" };
   let openName = null, lastFocus = null;
   function openSheet(name) {
     lastFocus = document.activeElement;
@@ -1175,6 +1249,7 @@ import { firebaseConfig } from "./config.js";
       updatedAt: now
     };
     if (F.editing && F.editing.importKey) { data.importKey = F.editing.importKey; data.src = F.editing.src || "csv"; }
+    if (F.editing && F.editing.fixedId) { data.fixedId = F.editing.fixedId; data.src = "fixed"; }
     const btn = $("#btnSave");
     btn.disabled = true;
     try {
@@ -1223,7 +1298,8 @@ import { firebaseConfig } from "./config.js";
     $("#acctEmail").textContent = S.email || "";
     $("#backupStatus").textContent = "";
     $("#btnRestoreRun").hidden = true;
-    for (const id of ["#n1", "#n2", "#btnSaveNames", "#addOut", "#btnAddOut", "#addIn", "#btnAddIn"]) $(id).disabled = !S.canWrite;
+    for (const id of ["#n1", "#n2", "#btnSaveNames", "#addOut", "#btnAddOut", "#addIn", "#btnAddIn", "#btnAddFixed"]) $(id).disabled = !S.canWrite;
+    renderFixedList();
     openSheet("settings");
   }
   async function saveNames(a, b) {
@@ -1237,15 +1313,23 @@ import { firebaseConfig } from "./config.js";
     next[key] = next[key].filter((x) => x !== c);
     try { await writeSettings(next); renderCatLists(); } catch (e) { renderCatLists(); }
   }
+  // 費目を1つ足す。足せた（またはもうあった）ら true
+  async function addCatValue(key, v) {
+    if (!v) return false;
+    if (S.settings[key].includes(v)) return true;
+    if (S.settings[key].length >= 30) { toast("費目は30個までです"); return false; }
+    const next = clone(S.settings);
+    next[key] = [...next[key], v];
+    try { await writeSettings(next); return true; } catch (e) { return false; }
+  }
   async function addCat(key, inputSel) {
     const inp = $(inputSel);
     const v = inp.value.trim().slice(0, 20);
     if (!v) return;
     if (S.settings[key].includes(v)) { toast("その費目はもうあります"); return; }
-    if (S.settings[key].length >= 30) { toast("費目は30個までです"); return; }
-    const next = clone(S.settings);
-    next[key] = [...next[key], v];
-    try { await writeSettings(next); inp.value = ""; renderCatLists(); } catch (e) { renderCatLists(); }
+    const ok = await addCatValue(key, v);
+    if (ok) inp.value = "";
+    renderCatLists();
   }
 
   // ---------- CSV ----------
@@ -1908,6 +1992,250 @@ import { firebaseConfig } from "./config.js";
     }
   }
 
+  // ---------- 毎月の決まった支払い ----------
+  // fixed/{id}: name, kind, amount, cat, person, day(1〜31。31は月末), startYm, doneYm（自動で記録し終えた月）
+  function sanitizeFixed(id, d) {
+    if (!d || typeof d !== "object") return null;
+    const amount = Math.round(Number(d.amount));
+    if (!Number.isFinite(amount) || amount <= 0) return null;
+    const day = Math.min(31, Math.max(1, Math.round(Number(d.day)) || 1));
+    const ymOk = (v) => typeof v === "string" && /^\d{4}-\d{2}$/.test(v);
+    if (!ymOk(d.startYm)) return null;
+    const kind = d.kind === "in" ? "in" : "out";
+    return {
+      id, kind, amount, day,
+      name: typeof d.name === "string" && d.name.trim() ? d.name.trim().slice(0, 40) : "毎月の支払い",
+      cat: typeof d.cat === "string" && d.cat.trim() ? d.cat.slice(0, 20) : "その他",
+      person: d.person === "p2" ? "p2" : "p1",
+      startYm: d.startYm,
+      doneYm: ymOk(d.doneYm) ? d.doneYm : "",
+      createdAt: Number(d.createdAt) || 0
+    };
+  }
+  function fixedData(it) {
+    return {
+      name: it.name, kind: it.kind, amount: it.amount, cat: it.cat, person: it.person, day: it.day,
+      startYm: it.startYm, doneYm: it.doneYm || "", createdAt: it.createdAt || Date.now(), updatedAt: Date.now()
+    };
+  }
+  function dateFor(ym, day) {
+    const [y, m] = ym.split("-").map(Number);
+    const last = new Date(y, m, 0).getDate();
+    return `${ym}-${pad(Math.min(day, last))}`;
+  }
+  function dayText(day) { return day >= 31 ? "月末" : `${day}日`; }
+
+  let fixedTimer = null;
+  function subscribeFixed() {
+    try {
+      S.db.collection("fixed").onSnapshot((snap) => {
+        S.fixed = snap.docs.map((d) => sanitizeFixed(d.id, d.data())).filter(Boolean)
+          .sort((a, b) => a.day - b.day || a.createdAt - b.createdAt);
+        if (!snap.metadata.fromCache) S.fixedLoaded = true;
+        if (openName === "settings") renderFixedList();
+        if (S.fixedLoaded) { clearTimeout(fixedTimer); fixedTimer = setTimeout(runFixed, 600); }
+      }, () => { /* 権限がないときは上の表示でわかる */ });
+    } catch (e) { /* ignore */ }
+  }
+
+  // その日になった分を記録する。記録のidは「fix-登録のid-年月」なので、2台で同時に開いても1件になる
+  let fixedBusy = false;
+  async function runFixed() {
+    if (!S.db || !S.canWrite || !S.fixedLoaded || fixedBusy) return;
+    if (typeof navigator !== "undefined" && navigator.onLine === false) return;
+    fixedBusy = true;
+    let made = 0;
+    try {
+      const today = todayStr(), curYm = ymOf(today);
+      for (const it of S.fixed.slice()) {
+        let ym = it.doneYm ? shiftYm(it.doneYm, 1) : it.startYm;
+        let done = it.doneYm;
+        for (let guard = 0; ym <= curYm && guard < 24; guard++) {
+          const date = dateFor(ym, it.day);
+          if (date > today) break;
+          const ref = S.db.collection(`months/${ym}/entries`).doc(`fix-${it.id}-${ym}`);
+          const snap = await withRetry(() => ref.get());
+          if (!snap.exists) {
+            const now = Date.now();
+            await settle(withRetry(() => ref.set({
+              date, kind: it.kind, amount: it.amount, cat: it.cat, person: it.person,
+              memo: it.name, createdAt: now, updatedAt: now, src: "fixed", fixedId: it.id
+            })));
+            made++;
+          }
+          done = ym;
+          ym = shiftYm(ym, 1);
+        }
+        if (done !== it.doneYm) {
+          it.doneYm = done;
+          await settle(withRetry(() => S.db.collection("fixed").doc(it.id).set(fixedData(it))));
+        }
+      }
+    } catch (e) {
+      toast(writeErrorText(e));
+    } finally {
+      fixedBusy = false;
+    }
+    if (made) toast(`毎月の支払いを${made}件記録しました`);
+  }
+
+  function renderFixedList() {
+    const ul = $("#fixedList");
+    ul.replaceChildren();
+    if (!S.fixed.length) {
+      ul.append(h("li", null, h("p", { class: "fixed-empty" }, S.fixedLoaded ? "まだ登録はありません。" : "読み込んでいます…")));
+      return;
+    }
+    for (const it of S.fixed) {
+      ul.append(h("li", null, h("button", {
+        type: "button", class: "fixed-btn", disabled: !S.canWrite,
+        "aria-label": `${it.name} 毎月${dayText(it.day)} ${yen(it.amount)} を直す`,
+        onclick: () => openFixed(it)
+      },
+        h("span", { class: "fx-name" }, it.name),
+        h("span", { class: `fx-amt ${it.kind}` }, (it.kind === "in" ? "+" : "−") + yen(it.amount)),
+        h("span", { class: "fx-sub" }, `毎月${dayText(it.day)}・${it.cat}・${pname(it.person)}`)
+      )));
+    }
+  }
+
+  const X = { kind: "out", cat: null, person: "p1", editing: null, startTouched: false };
+  function renderFixedForm() {
+    for (const b of $$("#xKind button")) b.setAttribute("aria-pressed", String(b.dataset.kind === X.kind));
+    const list = (X.kind === "in" ? S.settings.catsIn : S.settings.catsOut).slice();
+    if (X.cat && !list.includes(X.cat)) list.push(X.cat);
+    const wrap = $("#xCats");
+    wrap.replaceChildren();
+    for (const c of list) {
+      wrap.append(h("button", {
+        type: "button", class: "chip", "aria-pressed": String(c === X.cat),
+        onclick: () => { X.cat = c; renderFixedForm(); }
+      }, h("span", { class: "dot", style: `background:${catColor(c, X.kind)}` }), c));
+    }
+    $("#xPersonLab").textContent = X.kind === "in" ? "受け取る人" : "払う人";
+    for (const b of $$("#xPerson button")) {
+      b.setAttribute("aria-pressed", String(b.dataset.person === X.person));
+      b.querySelector(".nm").textContent = pname(b.dataset.person);
+    }
+    renderFixedHint();
+  }
+  function renderStartOptions() {
+    const day = Number($("#xDay").value) || 1;
+    const today = todayStr(), cur = ymOf(today), next = shiftYm(cur, 1);
+    const dCur = dateFor(cur, day), dNext = dateFor(next, day);
+    const keep = $("#xStart").value;
+    $("#xStart").replaceChildren(
+      h("option", { value: cur }, `今月から（${mdLabel(dCur)}の分）`),
+      h("option", { value: next }, `来月から（${mdLabel(dNext)}の分）`)
+    );
+    $("#xStart").value = X.startTouched && (keep === cur || keep === next) ? keep : (dCur >= today ? cur : next);
+  }
+  function renderFixedHint() {
+    const day = Number($("#xDay").value) || 1;
+    const today = todayStr();
+    let t = "その日になってから家計簿を開いたときに、記録されます。";
+    if (!X.editing) {
+      const start = $("#xStart").value || ymOf(today);
+      const first = dateFor(start, day);
+      if (first <= today) t = `保存すると、${mdLabel(first)}の分をすぐ記録します。` + t;
+      else t = `最初の記録は${mdLabel(first)}です。` + t;
+    } else {
+      t = "直した金額や費目は、これから記録される分から変わります。すでに入った記録は、そのままです。";
+    }
+    $("#xHint").textContent = t;
+  }
+  let xDeleteTimer = null;
+  function resetXDelete() {
+    clearTimeout(xDeleteTimer);
+    const b = $("#btnXDelete");
+    b.classList.remove("armed");
+    b.textContent = "この登録を消す";
+  }
+  function openFixed(it) {
+    if (!S.canWrite) return;
+    closeSheet();
+    X.editing = it || null;
+    X.startTouched = false;
+    X.kind = it ? it.kind : "out";
+    X.cat = it ? it.cat : null;
+    X.person = it ? it.person : S.me;
+    $("#fixedTitle").textContent = it ? "毎月の支払いを直す" : "毎月の支払いを登録";
+    $("#xName").value = it ? it.name : "";
+    $("#xAmount").value = it ? String(it.amount) : "";
+    $("#xNewCat").value = "";
+    const daySel = $("#xDay");
+    daySel.replaceChildren();
+    for (let d = 1; d <= 31; d++) daySel.append(h("option", { value: String(d) }, dayText(d)));
+    daySel.value = String(it ? it.day : Number(todayStr().slice(8)));
+    $("#xStartField").hidden = !!it;
+    if (!it) renderStartOptions();
+    $("#btnXDelete").hidden = !it;
+    $("#xError").textContent = "";
+    $("#btnXSave").disabled = false;
+    resetXDelete();
+    renderFixedForm();
+    openSheet("fixed");
+  }
+  async function submitFixed(ev) {
+    ev.preventDefault();
+    const err = $("#xError");
+    err.textContent = "";
+    const name = $("#xName").value.trim().slice(0, 40);
+    const amount = parseAmount($("#xAmount").value);
+    const day = Number($("#xDay").value);
+    if (!name) { err.textContent = "名前を入れてください（例：家賃）。"; $("#xName").focus(); return; }
+    if (!amount) { err.textContent = "金額を数字で入れてください（1円以上）。"; $("#xAmount").focus(); return; }
+    if (!X.cat) { err.textContent = "費目を選んでください。"; return; }
+    if (!(day >= 1 && day <= 31)) { err.textContent = "毎月の日を選んでください。"; return; }
+    const base = X.editing ? Object.assign({}, X.editing) : { createdAt: Date.now(), doneYm: "", startYm: $("#xStart").value || ymOf(todayStr()) };
+    const it = Object.assign(base, { name, amount, day, kind: X.kind, cat: X.cat, person: X.person });
+    const btn = $("#btnXSave");
+    btn.disabled = true;
+    try {
+      const coll = S.db.collection("fixed");
+      const ref = X.editing ? coll.doc(X.editing.id) : coll.doc();
+      await settle(withRetry(() => ref.set(fixedData(it))));
+      closeSheet();
+      toast(X.editing ? "直しました" : "登録しました");
+      openSettings();
+    } catch (e) {
+      err.textContent = writeErrorText(e);
+    } finally {
+      btn.disabled = false;
+    }
+  }
+  async function deleteFixed() {
+    const b = $("#btnXDelete");
+    if (!X.editing) return;
+    if (!b.classList.contains("armed")) {
+      b.classList.add("armed");
+      b.textContent = "もう一度押すと消します（記録は残ります）";
+      clearTimeout(xDeleteTimer);
+      xDeleteTimer = setTimeout(resetXDelete, 4000);
+      return;
+    }
+    b.disabled = true;
+    try {
+      await settle(withRetry(() => S.db.collection("fixed").doc(X.editing.id).delete()));
+      closeSheet();
+      toast("登録を消しました");
+      openSettings();
+    } catch (e) {
+      $("#xError").textContent = writeErrorText(e);
+    } finally {
+      b.disabled = false;
+      resetXDelete();
+    }
+  }
+  async function addFixedCat() {
+    const inp = $("#xNewCat");
+    const v = inp.value.trim().slice(0, 20);
+    if (!v) { inp.focus(); return; }
+    const key = X.kind === "in" ? "catsIn" : "catsOut";
+    const ok = await addCatValue(key, v);
+    if (ok) { X.cat = v; inp.value = ""; renderFixedForm(); toast(`費目「${v}」を作りました`); }
+  }
+
   // ---------- toast ----------
   let toastTimer = null;
   function toast(msg) {
@@ -1978,6 +2306,25 @@ import { firebaseConfig } from "./config.js";
     $("#balForm").addEventListener("submit", saveBalance);
     for (const b of $$("#mePickSeg button")) b.addEventListener("click", () => setMe(b.dataset.me));
     $("#btnBackup").addEventListener("click", backupSave);
+    $("#btnAddFixed").addEventListener("click", () => openFixed(null));
+    $("#fixedForm").addEventListener("submit", submitFixed);
+    $("#btnXDelete").addEventListener("click", deleteFixed);
+    $("#btnXNewCat").addEventListener("click", addFixedCat);
+    $("#xNewCat").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); addFixedCat(); } });
+    $("#xAmount").addEventListener("blur", (e) => { const n = parseAmount(e.target.value); if (n) e.target.value = String(n); });
+    $("#xDay").addEventListener("change", () => { if (!X.editing) renderStartOptions(); renderFixedHint(); });
+    $("#xStart").addEventListener("change", () => { X.startTouched = true; renderFixedHint(); });
+    for (const b of $$("#xKind button")) {
+      b.addEventListener("click", () => {
+        if (X.kind === b.dataset.kind) return;
+        X.kind = b.dataset.kind;
+        const list = X.kind === "in" ? S.settings.catsIn : S.settings.catsOut;
+        if (!list.includes(X.cat)) X.cat = null;
+        renderFixedForm();
+      });
+    }
+    for (const b of $$("#xPerson button")) b.addEventListener("click", () => { X.person = b.dataset.person; renderFixedForm(); });
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") runFixed(); });
     $("#restoreFile").addEventListener("change", (e) => restorePrepare(e.target.files && e.target.files[0]));
     $("#btnRestoreRun").addEventListener("click", restoreRun);
     $("#btnLogout").addEventListener("click", async () => {
@@ -1998,7 +2345,7 @@ import { firebaseConfig } from "./config.js";
   }
 
   // ---------- バックアップ ----------
-  const BACKUP_PATH = /^(settings\/main|imports\/[\w.~:@+-]+|accounts\/[\w.~:@+-]+|months\/\d{4}-\d{2}\/entries\/[\w.~:@+-]+)$/;
+  const BACKUP_PATH = /^(settings\/main|imports\/[\w.~:@+-]+|accounts\/[\w.~:@+-]+|fixed\/[\w.~:@+-]+|months\/\d{4}-\d{2}\/entries\/[\w.~:@+-]+)$/;
   async function backupSave() {
     if (!S.db) return;
     const st = $("#backupStatus");
@@ -2007,7 +2354,7 @@ import { firebaseConfig } from "./config.js";
       const docs = {};
       const settings = await S.db.doc("settings/main").get();
       if (settings.exists) docs["settings/main"] = settings.data();
-      for (const c of ["imports", "accounts"]) {
+      for (const c of ["imports", "accounts", "fixed"]) {
         const q = await S.db.collection(c).get();
         for (const d of q.docs) docs[`${c}/${d.id}`] = d.data();
       }
@@ -2119,6 +2466,7 @@ import { firebaseConfig } from "./config.js";
     subscribeSettings();
     subscribeImports();
     subscribeAccounts();
+    subscribeFixed();
     subscribeMonth();
     refreshDebits();
   }
