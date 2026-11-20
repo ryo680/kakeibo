@@ -1,6 +1,7 @@
 // 画面のファイルを端末に控えておき、電波が弱いときも開けるようにする。
 // 記録の読み書き（Firebase の通信）には手を出さない。
-const CACHE = "futari-kakeibo-v4";
+const CACHE = "futari-kakeibo-v5";
+const PREFIX = "futari-kakeibo-"; // 同じ github.io の家事メモ・暮らしの工夫の控えは消さない
 const FONT_CACHE = "ud-font-v1";
 const WAIT_MS = 3000; // ネットの返事をこれ以上待たずに、控えで開く
 const FILES = [
@@ -13,7 +14,7 @@ self.addEventListener("install", (e) => {
 self.addEventListener("activate", (e) => {
   e.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE && k !== FONT_CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k.startsWith(PREFIX) && k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
